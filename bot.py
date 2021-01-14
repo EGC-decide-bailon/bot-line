@@ -3,18 +3,10 @@ from __future__ import unicode_literals
 import os
 import sys
 from argparse import ArgumentParser
-from flask import Flask, request, Response
-
-from flask import Flask, request, abort
-from linebot import (
-    LineBotApi, WebhookParser
-)
-from linebot.exceptions import (
-    InvalidSignatureError
-)
-from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
-)
+from flask import Flask, request, Response, abort
+from linebot import (LineBotApi, WebhookParser)
+from linebot.exceptions import (InvalidSignatureError)
+from linebot.models import (MessageEvent, TextMessage, TextSendMessage,)
 
 app = Flask(__name__)
 
@@ -53,13 +45,12 @@ def callback():
         if not isinstance(event.message, TextMessage):
             continue
 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=event.message.text)
-        )
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.message.text))
 
     return 'OK'
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+#, host='0.0.0.0', port=env.get("PORT", 5000)
