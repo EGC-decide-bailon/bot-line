@@ -32,8 +32,8 @@ parser = WebhookParser(channel_secret)
 def application(environ, start_response):
     # check request path
     if environ['PATH_INFO'] != '/callback':
-        start_response('404 Not Found', [])
-        return create_body('Not Found')
+        start_response('200 OK', [])
+        return create_body('OK')
 
     # check request method
     if environ['REQUEST_METHOD'] != 'POST':
