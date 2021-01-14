@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import os
 import sys
 from argparse import ArgumentParser
+from flask import Flask, request, Response
 
 from flask import Flask, request, abort
 from linebot import (
@@ -61,11 +62,4 @@ def callback():
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(
-        usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
-    )
-    arg_parser.add_argument('-p', '--port', type=int, default=8000, help='port')
-    arg_parser.add_argument('-d', '--debug', default=False, help='debug')
-    options = arg_parser.parse_args()
-
-    app.run(debug=options.debug, port=options.port)
+    app.run(debug=True)
