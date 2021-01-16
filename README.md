@@ -48,19 +48,24 @@ El primer paso es añadir al bot como amigo en la plataforma Line. Al agregarlo,
 ### /commands_list
 
 Podemos acceder a un listado completo de los comandos disponibles:
+![commands_list](Images/commands_list.jpeg "")
 
 ### /login
 
 Para poder acceder a las votaciones será necesario iniciar sesión en Decide. Al iniciar sesión podremos acceder a toda la información sobre votaciones disponibles, así como partipar en ellas.
+![login](Images/login.jpeg "")
 
 ### /info_votaciones
 
 Para obtener una lista completa con todas las votaciones en las que el usuario puede participar usaremos este comando.
+![info_votaciones](Images/info_votaciones.jpeg "")
 
 ### /info_votacion
 
 Si se desean obtener más detalles sobre una votación en concreto, podemos utilizar este comando.
+![info_votacion](Images/info_votacion.jpeg "")
 
 ### /votar
 
 Para participar en una votación utilizaremos este comando.
+![votar](Images/votar.jpeg "")
