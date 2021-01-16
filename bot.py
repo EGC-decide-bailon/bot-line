@@ -16,6 +16,8 @@ channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
 URL_BASE = 'https://decide-voting.herokuapp.com/'
 
+
+#Comprobamos que los token estan añadidos correctamente
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
     sys.exit(1)
@@ -31,25 +33,23 @@ DIC = {}
 #Ruta por defecto en la que entran las peticiones al bot
 @app.route("/callback", methods=['POST'])
 def callback():
+    #comprobamos que la petición procede de Line por motivos de seguridad
     signature = request.headers['X-Line-Signature']
-
-    # get request body as text
     body = request.get_data(as_text=True)
-    #app.logger.info("Request body: " + body)
 
-    # parse webhook body
     try:
         events = parser.parse(body, signature)
     except InvalidSignatureError:
         abort(400)
 
-    # if event is MessageEvent and message is TextMessage, then echo text
+    #comprobamos que el mensaje recibido es un mensaje de texto
     for event in events:
         if not isinstance(event, MessageEvent):
             continue
         if not isinstance(event.message, TextMessage):
             continue
         
+        #identificamos el comando que intrujo el usuario
         msg = event.message.text.split()
 
         if(msg[0][0]=='/'):
@@ -64,6 +64,7 @@ def callback():
                 get_votacion(event)
             elif(msg[0]=='/votar'):
                 vote(event)
+        #si no se reconoce el comando se avisa al cliente con un mensaje por defecto
         else:
             not_command(event)
 
@@ -92,6 +93,7 @@ def login_decide(event):
     data = response.json()
     token = data["token"]
 
+    #si el usuario se ha logeado correctamente, guardamos su token de usuario en decide en una variable local para futuras referencias
     if(response.status_code==200):
         DIC[str(event.source.user_id)] = token
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Has iniciado sesión con éxito.\nSi quieres ver información sobre las votaciones prueba a escribir\n"/info_votaciones".'))
@@ -132,6 +134,7 @@ def get_votacion(event):
         response = requests.get(url, headers = headers)
         data = response.json()
 
+        #seleccionamos unicamente la votacion indicada por el usuario en el mensaje
         votaciones = parseVotaciones(data)
         msg = event.message.text.split()
         idVotacion = msg[1]
