@@ -116,13 +116,13 @@ def get_votaciones(event):
         for v in votaciones:
             cadena = cadena + 'ID: ' + str(v.get("id")) + '\n' + 'Nombre: ' + str(v.get("name")) + '\n' + 'Descripción: ' + str(v.get("desc"))+ '\n' + 'Pregunta: ' + str(v.get("question").get("desc")) + '\n\n'
 
+        if(response.status_code==200):
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Esta es la lista de votaciones en las que puedes participar:\n\n' + cadena + 'Para obtener información sobre una' +
+                ' votacion en concreto prueba el comando\n"/info_votacion" seguido del id de la votación que deseas mostrar.'))
+
     except:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. ¿Has iniciado sesión?'))
-
-    if(response.status_code==200):
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Esta es la lista de votaciones en las que puedes participar:\n\n' + cadena + 'Para obtener información sobre una' +
-            ' votacion en concreto prueba el comando\n"/info_votacion" seguido del id de la votación que deseas mostrar.'))
-            
+           
 
 def get_votacion(event):
     try:
@@ -138,12 +138,12 @@ def get_votacion(event):
         votacion = votaciones[int(idVotacion)-1]
         cadena = 'ID: ' + str(votacion.get("id")) + '\nNombre: ' + str(votacion.get("name")) + '\nDescripción: ' + str(votacion.get("desc"))+ '\nPregunta: ' + str(votacion.get("question").get("desc")) + '\nOpciones: ' + str(votacion.get("question").get("options")[0].get("option")) + ' / ' + str(votacion.get("question").get("options")[1].get("option"))
     
+        if(response.status_code==200):
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Aquí esta la información sobre la votación solicitada:\n\n' + cadena + '\n\nSi deseas participar en esta votación' +
+                ' utiliza el comando "/votar" seguido del id de la votación y tu respuesta.\n\nEjemplo: quiero votar sí a la votacion 1.\n/votar 1 si'))
+
     except:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Comprueba el id introducido e inténtalo de nuevo.'))
-
-    if(response.status_code==200):
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Aquí esta la información sobre la votación solicitada:\n\n' + cadena + '\n\nSi deseas participar en esta votación' +
-            ' utiliza el comando "/votar" seguido del id de la votación y tu respuesta.\n\nEjemplo: quiero votar sí a la votacion 1.\n/votar 1 si'))
 
 def vote(event):
     try:
