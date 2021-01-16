@@ -49,7 +49,7 @@ El primer paso es añadir al bot como amigo en la plataforma Line. Al agregarlo,
 ### /commands_list
 
 Podemos acceder a un listado completo de los comandos disponibles:
-![commands_list](Images/commands_list.jpeg "")
+![commands_list](Images/commands_list.png "")
 
 ### /login
 
