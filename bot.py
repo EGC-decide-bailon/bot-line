@@ -171,15 +171,15 @@ def vote(event):
             }
 
             response = requests.post(url, json=data_votacion, headers = headers)
+
+            if(response.status_code==200):
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Tu voto se ha registrado correctamente. Gracias por participar.'))
         
         except:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Comprueba el id introducido e inténtalo de nuevo'))
 
     except:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. ¿Has iniciado sesión?'))
-
-    if(response.status_code==200):
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Tu voto se ha registrado correctamente. Gracias por participar.'))
 
 def not_command(event):
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Perdona pero no he renocido el comando.\nSi quieres ver la lista completa de comandos prueba a escribir "/commands_list"'))
