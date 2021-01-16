@@ -12,14 +12,9 @@ from linebot.models import (MessageEvent, TextMessage, TextSendMessage,)
 app = Flask(__name__)
 
 # VARIABLES TOKEN PARA LA CONEXION CON LINE
-# channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
-# channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
+channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
 URL_BASE = 'https://decide-voting.herokuapp.com/'
-
-##PARA EL DESPLIEGUE EN LOCAL
-
-channel_secret = '8a401267ff13adf83d61a8d3634f27fb'
-channel_access_token = 'SPmbgV2uPoHOOs1cGwS+lSfUdkluJ2vMXCzgzqQZBovOVgKfupIeYpD7WmRdYwdd+GB+VK3MqN5Pi2cWDCKMu2iMVJ8oi1ptq7TNeJCsDI2JTeNYNiSO1l0DQiVe6Dzq455FUJJnpywlxusspxlfDwdB04t89/1O/w1cDnyilFU='
 
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
@@ -99,7 +94,7 @@ def login_decide(event):
 
     if(response.status_code==200):
         DIC[str(event.source.user_id)] = token
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Has iniciado sesión con éxito.\nSi quieres ver información sobre las votaciones prueba a escribir\n"/info_votaciones"'))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Has iniciado sesión con éxito.\nSi quieres ver información sobre las votaciones prueba a escribir\n"/info_votaciones".'))
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Revisa tus credenciales.'))
 
@@ -126,7 +121,7 @@ def get_votaciones(event):
 
     if(response.status_code==200):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Esta es la lista de votaciones en las que puedes participar:\n\n' + cadena + 'Para obtener información sobre una' +
-            ' votacion en concreto prueba el comando\n"/info_votacion" seguido del id de la votación que deseas mostrar'))
+            ' votacion en concreto prueba el comando\n"/info_votacion" seguido del id de la votación que deseas mostrar.'))
             
 
 def get_votacion(event):
@@ -148,7 +143,7 @@ def get_votacion(event):
 
     if(response.status_code==200):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Aquí esta la información sobre la votación solicitada:\n\n' + cadena + '\n\nSi deseas participar en esta votación' +
-            ' utiliza el comando "/votar seguido del id de la votación y tu respuesta.\n\nEjemplo: quiero votar sí a la votacion 1.\n/votar 1 si'))
+            ' utiliza el comando "/votar" seguido del id de la votación y tu respuesta.\n\nEjemplo: quiero votar sí a la votacion 1.\n/votar 1 si'))
 
 def vote(event):
     try:
@@ -156,7 +151,6 @@ def vote(event):
         data = {'token': token}
         user = requests.post(URL_BASE + "authentication/getuser/", data)
         user = json.loads(user.text)
-        print(user)
 
         try:
             headers = {"Authorization": "Token " + token, "Content-Type": "application/json"}
