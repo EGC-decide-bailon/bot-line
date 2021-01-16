@@ -44,12 +44,12 @@ Este bot tiene como propósito permitir votaciones al sistema de decide a travé
 ### Primer contacto
 
 El primer paso es añadir al bot como amigo en la plataforma Line. Al agregarlo, debería llegarnos un mensaje similar al siguiente:
-![greeting](Images/greeting.jpeg "")
+![greeting](Images/greeting.png "")
 
 ### /commands_list
 
 Podemos acceder a un listado completo de los comandos disponibles:
-![commands_list](Images/commands_list.png "")
+![commands_list](Images/commands_list.jpeg "")
 
 ### /login
 
