@@ -44,6 +44,7 @@ Este bot tiene como propósito permitir votaciones al sistema de decide a travé
 ### Primer contacto
 
 El primer paso es añadir al bot como amigo en la plataforma Line. Al agregarlo, debería llegarnos un mensaje similar al siguiente:
+![greeting](Images/greeting.jpeg "")
 
 ### /commands_list
 
