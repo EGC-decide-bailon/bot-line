@@ -33,6 +33,7 @@ parser = WebhookParser(channel_secret)
 
 DIC = {}
 
+#Ruta por defecto en la que entran las peticiones al bot
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
@@ -100,7 +101,7 @@ def login_decide(event):
         DIC[str(event.source.user_id)] = token
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Has iniciado sesión con éxito.\nSi quieres ver información sobre las votaciones prueba a escribir\n"/info_votaciones"'))
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha habido un error. Revisa tus credenciales.'))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Revisa tus credenciales.'))
 
 def get_votaciones(event):
     
@@ -121,7 +122,7 @@ def get_votaciones(event):
             cadena = cadena + 'ID: ' + str(v.get("id")) + '\n' + 'Nombre: ' + str(v.get("name")) + '\n' + 'Descripción: ' + str(v.get("desc"))+ '\n' + 'Pregunta: ' + str(v.get("question").get("desc")) + '\n\n'
 
     except:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha habido un error. ¿Has iniciado sesión?'))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. ¿Has iniciado sesión?'))
 
     if(response.status_code==200):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Esta es la lista de votaciones en las que puedes participar:\n\n' + cadena + 'Para obtener información sobre una' +
@@ -143,14 +144,48 @@ def get_votacion(event):
         cadena = 'ID: ' + str(votacion.get("id")) + '\nNombre: ' + str(votacion.get("name")) + '\nDescripción: ' + str(votacion.get("desc"))+ '\nPregunta: ' + str(votacion.get("question").get("desc")) + '\nOpciones: ' + str(votacion.get("question").get("options")[0].get("option")) + ' / ' + str(votacion.get("question").get("options")[1].get("option"))
     
     except:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha habido un error. Comprueba el id introducido e inténtalo de nuevo'))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Comprueba el id introducido e inténtalo de nuevo.'))
 
     if(response.status_code==200):
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Aquí esta la información sobre la votación solicitada:\n\n' + cadena + '\n\nSi deseas participar en esta votación' +
             ' utiliza el comando "/votar seguido del id de la votación y tu respuesta.\n\nEjemplo: quiero votar sí a la votacion 1.\n/votar 1 si'))
 
 def vote(event):
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=''))
+    try:
+        token = DIC[str(event.source.user_id)]
+        data = {'token': token}
+        user = requests.post(URL_BASE + "authentication/getuser/", data)
+        user = json.loads(user.text)
+        print(user)
+
+        try:
+            headers = {"Authorization": "Token " + token, "Content-Type": "application/json"}
+            url = URL_BASE + "store/"
+            msg = event.message.text.split()
+            idVotacion = msg[1]
+            if(msg[2].lower()=='si'):
+                a,b=1,0
+            elif(msg[2].lower()=='no'):
+                a,b=0,1
+            else:
+                line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Introduce una repuesta válida: si/no.'))
+            data_votacion = {
+                "vote": { "a": a,"b":b},
+                "voting": idVotacion,
+                "voter": user["id"],
+                "token": token
+            }
+
+            response = requests.post(url, json=data_votacion, headers = headers)
+        
+        except:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Comprueba el id introducido e inténtalo de nuevo'))
+
+    except:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. ¿Has iniciado sesión?'))
+
+    if(response.status_code==200):
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Tu voto se ha registrado correctamente. Gracias por participar.'))
 
 def not_command(event):
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Perdona pero no he renocido el comando.\nSi quieres ver la lista completa de comandos prueba a escribir "/commands_list"'))
