@@ -2,7 +2,6 @@ import unittest
 import requests
 import json
 import sys
-import bot
 
 URL_BASE = "https://decide-voting.herokuapp.com/"
 user = "user"
@@ -54,13 +53,13 @@ class TestMethods(unittest.TestCase):
 
         #seleccionamos una única votación
         data = response.json()
-        votaciones = bot.parseVotaciones(data)
+        votaciones = parseVotaciones(data)
         msg = mensaje.split()
         idVotacion = msg[1]
         votacion = votaciones[int(idVotacion)-1]
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(votacion.get("ID"),1)
+        self.assertEqual(votacion.get("id"),1)
 
     #Test obtener una votación a partir de su ID con un ID que no existe
     def test_retrieve_votacion_error(self):
@@ -73,32 +72,30 @@ class TestMethods(unittest.TestCase):
         mensaje = "/info_votacion 9"
 
         #seleccionamos una única votación
-        data = response.json()
-        votaciones = bot.parseVotaciones(data)
-        msg = mensaje.split()
-        idVotacion = msg[1]
-        votacion = votaciones[int(idVotacion)-1]
+        try:
+            data = response.json()
+            votaciones = parseVotaciones(data)
+            msg = mensaje.split()
+            idVotacion = msg[1]
+            votacion = votaciones[int(idVotacion)-1]
+            self.assertIsNone(votacion)
+        except:         
+            self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertoken = DIC[str(user)]
-        headers = {"token": str(token)}
-        url = URL_BASE + "voting/"
-        response = requests.get(url, headers = headers)
 
-        #Definimos un mensaje similar al que enviaría el cliente
-        mensaje = "/info_votacion 1"
 
-        #seleccionamos una única votación
-        data = response.json()
-        votaciones = bot.parseVotaciones(data)
-        msg = mensaje.split()
-        idVotacion = msg[1]
-        votacion = votaciones[int(idVotacion)-1]
-        print(votacion)
+#Método auxiliar para parsear las votaciones
+def parseVotaciones(votaciones):
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIsNone(votacion)
+    res = []
+    for vot in votaciones:
+        v = {'id': vot['id'], 'name': vot['name'], 'desc': vot['desc'], 'end_date': vot['end_date'],
+             'start_date': vot['start_date'], 'question': vot['question'], 'pub_key': vot['pub_key']}
 
+        if v['start_date'] is not None and v['end_date'] is None:
+            res.append(v)
+
+    return res
 
 
 if __name__ == '__main__':
