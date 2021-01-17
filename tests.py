@@ -11,6 +11,7 @@ DIC = {}
 
 class TestMethods(unittest.TestCase):
 
+
     #Test login con credenciales válidas
     def test_login_exito(self):
         url = URL_BASE + "authentication/login/"
@@ -23,6 +24,7 @@ class TestMethods(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+
     #Test login con credenciales inválidas
     def test_login_error(self):
         url = URL_BASE + "authentication/login/"
@@ -32,6 +34,7 @@ class TestMethods(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+
     #Test obtener votaciones
     def test_retrieve_votaciones_exito(self):
         token = DIC[str(user)]
@@ -40,6 +43,7 @@ class TestMethods(unittest.TestCase):
         response = requests.get(url, headers = headers)
 
         self.assertEqual(response.status_code, 200)
+
 
     #Test obtener una votación a partir de su ID con ID válido
     def test_retrieve_votacion_exito(self):
@@ -61,6 +65,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(votacion.get("id"),1)
 
+
     #Test obtener una votación a partir de su ID con un ID que no existe
     def test_retrieve_votacion_error(self):
         token = DIC[str(user)]
@@ -81,6 +86,28 @@ class TestMethods(unittest.TestCase):
             self.assertIsNone(votacion)
         except:         
             self.assertEqual(response.status_code, 200)
+
+
+    def test_vote_exito(self):
+        #Recuperamos el id del usuario
+        token = DIC[str(user)]
+        data = {'token': token}
+        user_data = requests.post(URL_BASE + "authentication/getuser/", data)
+        user_data = json.loads(user_data.text)
+
+        headers = {"Authorization": "Token " + token, "Content-Type": "application/json"}
+        url = URL_BASE + "store/"
+
+        data_votacion = {
+            "vote": { "a": 1,"b":0},
+            "voting": 1,
+            "voter": user_data["id"],
+            "token": token
+        }
+
+        response = requests.post(url, json=data_votacion, headers = headers)
+
+        self.assertEqual(response.status_code, 200)
 
 
 #Método auxiliar para parsear las votaciones
