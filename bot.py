@@ -11,7 +11,7 @@ from linebot.models import (MessageEvent, TextMessage, TextSendMessage,)
 
 app = Flask(__name__)
 
-# VARIABLES TOKEN PARA LA CONEXION CON LINE
+#VARIABLES TOKEN PARA LA CONEXION CON LINE
 channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
 channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
 URL_BASE = 'https://decide-voting.herokuapp.com/'
@@ -78,26 +78,28 @@ def commands_list(event):
 
 def login_decide(event):
     #recuperamos las credenciales del mensaje del usuario
-    msg = event.message.text.split()
-    user = msg[1]
-    password = msg[2]
 
-    #preparamos la peticion a Decide
-    url = URL_BASE + "authentication/login/"
-    auth = {
-        "username": str(user),
-        "password": str(password)
-    }
+    try:
+        msg = event.message.text.split()
+        user = msg[1]
+        password = msg[2]
 
-    response = requests.post(url,auth)
-    data = response.json()
-    token = data["token"]
+        #preparamos la peticion a Decide
+        url = URL_BASE + "authentication/login/"
+        auth = {
+            "username": str(user),
+            "password": str(password)
+        }
 
-    #si el usuario se ha logeado correctamente, guardamos su token de usuario en decide en una variable local para futuras referencias
-    if(response.status_code==200):
-        DIC[str(event.source.user_id)] = token
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Has iniciado sesión con éxito.\nSi quieres ver información sobre las votaciones prueba a escribir\n"/info_votaciones".'))
-    else:
+        response = requests.post(url,auth)
+        data = response.json()
+        token = data["token"]
+        
+        #si el usuario se ha logeado correctamente, guardamos su token de usuario en decide en una variable local para futuras referencias
+        if(response.status_code==200):
+            DIC[str(event.source.user_id)] = token
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Has iniciado sesión con éxito.\nSi quieres ver información sobre las votaciones prueba a escribir\n"/info_votaciones".'))
+    except:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(text='Parece que ha ocurrido un error. Revisa tus credenciales.'))
 
 def get_votaciones(event):
