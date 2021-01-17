@@ -47,6 +47,10 @@ El primer paso es añadir al bot como amigo en la plataforma Line. Al agregarlo,
 
 ![greeting](Images/greeting.PNG "")
 
+Se puede agregar al bot como amigo escaneando el siguiente código QR:
+
+![QR](Images/QR.PNG "")
+
 ### /commands_list
 
 Podemos acceder a un listado completo de los comandos disponibles:
