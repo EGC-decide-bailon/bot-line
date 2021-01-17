@@ -104,7 +104,7 @@ def login_decide(event):
 
 def get_votaciones(event):
     
-    #recuperamos el token del usuario para mostrar solo las votaciones en la que puede participar
+    #recuperamos el token del usuario para realizar la peticion
     try:
         token = DIC[str(event.source.user_id)]
         headers = {"token": str(token)}
