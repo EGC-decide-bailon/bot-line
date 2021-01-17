@@ -83,7 +83,6 @@ class TestMethods(unittest.TestCase):
             self.assertEqual(response.status_code, 200)
 
 
-
 #Método auxiliar para parsear las votaciones
 def parseVotaciones(votaciones):
 
